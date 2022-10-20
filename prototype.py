@@ -2,8 +2,10 @@ import matplotlib.pylab as plt
 import numpy as np
 import scipy.integrate
 
+
 def dose(t, X):
     return X
+
 
 def rhs(t, y, Q_p1, V_c, V_p1, CL, X):
     q_c, q_p1 = y
@@ -36,15 +38,13 @@ y0 = np.array([0.0, 0.0])
 fig = plt.figure()
 for model in [model1_args, model2_args]:
     args = [
-        model['Q_p1'], model['V_c'], model['V_p1'], model['CL'], model['X']
-    ]
+        model['Q_p1'], model['V_c'], model['V_p1'], model['CL'], model['X']]
     sol = scipy.integrate.solve_ivp(
-        fun=lambda t, y: rhs(t, y, *args),
-        t_span=[t_eval[0], t_eval[-1]],
-        y0=y0, t_eval=t_eval
-    )
-    plt.plot(sol.t, sol.y[0, :], label=model['name'] + '- q_c')
-    plt.plot(sol.t, sol.y[1, :], label=model['name'] + '- q_p1')
+        fun = lambda t, y: rhs(t, y, * args),
+        t_span = [t_eval[0], t_eval[ - 1]],
+        y0 = y0, t_eval = t_eval)
+    plt.plot(sol.t, sol.y[0, :], label = model['name'] + ' - q_c')
+    plt.plot(sol.t, sol.y[1, :], label = model['name'] + ' - q_p1')
 
 plt.legend()
 plt.ylabel('drug mass [ng]')
