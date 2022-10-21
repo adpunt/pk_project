@@ -29,6 +29,10 @@ class Protocol:
             self.time = float(time)
         except ValueError:
             raise TypeError('initial_dose and time must be numeric.')
+        if self.initial_dose < 0:
+            raise ValueError('initial_dose must be greater than or equal to 0')
+        if self.time <= 0:
+            raise ValueError('time must be greater than 0')
 
 
     def __str__(self):

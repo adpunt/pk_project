@@ -16,15 +16,20 @@ class Compartment:
 
     def __init__(self, volume: float, transition_rate: float):
         # Argument validation
-        if type(volume) not in [int, float]:
-            raise TypeError('volume should be numeric')
-        if type(transition_rate) not in [int, float]:
-            raise TypeError('transition_rate should be numeric')
-        self.volume = volume
-        self.transition_rate = transition_rate
+        if type(volume) not in [int, float] or volume <= 0:
+            raise TypeError('volume should be a number greater than 0')
+        if type(transition_rate) not in [int, float] or transition_rate < 0:
+            raise TypeError('transition_rate should be a number greater than or equal to 0')
+        self.volume = float(volume)
+        self.transition_rate = float(transition_rate)
 
 
     def __str__(self):
         """Returns the name of the compartment as a string.
         """
         return self.name 
+
+
+    @property
+    def name(self) -> str:
+        return '[volume={0}, transition_rate={1}]'.format(self.volume, self.transition_rate)
