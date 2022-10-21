@@ -12,7 +12,7 @@ class Protocol:
         compartment.
     """
 
-    def __init__(self, initial_dose: float, time: float, dose_func=lambda x, y: 0):
+    def __init__(self, initial_dose, time, dose_func=lambda x, y: 0):
         # Argument validation
         if not callable(dose_func):
             raise TypeError('dose_func must be a callable function.')
@@ -41,3 +41,7 @@ class Protocol:
     @property
     def name(self) -> str:
         return '[initial_dose={0}, time={1}]'.format(self.initial_dose, self.time)
+
+    # @property
+    # def dose_func(self):
+    #     return self.dose_func

@@ -1,6 +1,6 @@
 import pkmodel as pk
 import scipy.integrate
-# import matplotlib.pyplot
+import matplotlib.pylab as plt
 import numpy
 
 
@@ -121,18 +121,37 @@ class Model:
         q_c = self.central_compartment.transition_rate
         if not self.k_a:
             # I.V. dosing
-            dqc_dt = protocol.dose_func(t, protocol.initial_dose) - (q_c / v_c) * q_c
+            dqc_dt = protocol.dose_func(t,q) - (q_c / v_c) * q_c
         else:
             # Subcontinuous dosing
-            dq0_dt = protocol.dose_func(t, protocol.initial_dose) - (self.k_a * q_0)
-            eqns.append(dq0_dt)
+            dq0_dt = protocol.dose_func(t,q) - (self.k_a * q_0)
+            eqns = (dq0_dt)
             dqc_dt = (self.k_a * q_c) - (q_c / v_c) * q_c
         # Calculate transitions which will be used in both dqc_dt and dqp_dt
+        res_p = []
         for pc in self.peripheral_compartments:
             dqp_dt = pc.transition_rate * ((q_c / v_c) - (q_p / pc.volume))
-            eqns.append(dqp_dt)
-        eqns.append(dqc_dt)
-        return eqns
+            res_p.append(dqp_dt)
+        res = dqc_dt
+        for p in res_p:
+            res += p
+        return res
+
+    def plot_sol(self, sol):
+        """Plots the solution to the PK model.
+
+        Args:
+            sol: An object of type scipy.integrate._ivp.ivp.OdeResult
+            that represents the quantities of a drug in a given
+            compartment over time.
+        """
+        fig = plt.figure()
+        plt.plot(sol.t, sol.y[0, :], label=self.name + '- q_c')
+        plt.plot(sol.t, sol.y[1, :], label=self.name + '- q_protocol1')
+        plt.legend()
+        plt.ylabel('drug mass [ng]')
+        plt.xlabel('time [h]')
+        plt.show()
 
     def solve(self, protocol):
         """Solves the PK model given a protocol, using scipy's solve_ivp
@@ -156,10 +175,12 @@ class Model:
             y0 = numpy.zeros(len(self.peripheral_compartments) + 1)
         else:
             y0 = numpy.zeros(len(self.peripheral_compartments) + 2)
+        y0[0] = protocol.initial_dose
         # Solve ODE based on system of equations, timespan, and initial conditions
         sol = scipy.integrate.solve_ivp(
-            fun=lambda t, q: self.rhs(t, q, protocol),
+            fun=lambda t, y: self.rhs(t, y, protocol),
             t_span=[t_eval[0], t_eval[-1]],
             y0=y0, t_eval=t_eval
         )
+        self.plot_sol(sol)
         return sol
