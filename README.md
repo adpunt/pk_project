@@ -68,7 +68,7 @@ This package can be installed using pip.
 
 Here is an example of how you would set up some models and solve them using various dosing protocols.
 
-```
+```python
 import pkmodel as pk
 
 # Define compartments
