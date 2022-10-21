@@ -1,27 +1,30 @@
-#
-# Compartment class
-#
-
 class Compartment:
-    """A Pharmokinetic (PK) model
+    """The Compartment class contains the building blocks of the PK 
+    model. Each compartment contains a volume and transition rate in
+    and out of the compartmnet. Note that for central compartments, the
+    transition rate represents the clearance rate.
 
-    Parameters
-    ----------
-
-    value: numeric, optional
-        an example paramter
-
+    Attributes:
+        volume: A float indicating the volume of that compartment.
+        transition_rate: A float indicating either the rate [mL/h]
+        between the central compartment and the peripheral
+        compartment, in the case of a peripheral compartment, or the
+        clearance/elimination rate, in the case of a central
+        compartment.
     """
-    def __init__(self, volume, transition_rate):
-    # NOTE: TRANSITION RATE IS CLEARANCE RATE FOR CENTRAL COMPARTMENTS 
-    	# try: 
-    	# 	self.volume = float(volume)
-    	# 	self.transition_rate = float(transition_rate)
-    	# except ValueError:
-    	# 	raise TypeError('both volume and transition rate must be numeric.')
-    	self.volume = volume
-    	self.transition_rate = transition_rate
-    def __str__(self):
-        return self.name 
 
-   
+
+    def __init__(self, volume: float, transition_rate: float):
+        # Argument validation
+        if type(volume) not in [int, float]:
+            raise TypeError('volume should be numeric')
+        if type(transition_rate) not in [int, float]:
+            raise TypeError('transition_rate should be numeric')
+        self.volume = volume
+        self.transition_rate = transition_rate
+
+
+    def __str__(self):
+        """Returns the name of the compartment as a string.
+        """
+        return self.name 

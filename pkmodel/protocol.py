@@ -1,18 +1,20 @@
-#
-# Protocol class
-#
-
 class Protocol:
-    """A Pharmokinetic (PK) protocol
+    """The Protocol class contains the dosing protocol for the PK
+    model. The user can specify the initial dosage, timespan of the
+    dosage, and an optional dosage function.
 
-    Parameters
-    ----------
-
-    value: numeric, optional
-        an example paramter
-
+    Attributes:
+        initial_dose: A float indicating initial dosage [ng].
+        transition_rate: A float indicating either the rate [mL/h]
+        between the central compartment and the peripheral
+        compartment, in the case of a peripheral compartment, or the
+        clearance/elimination rate, in the case of a central
+        compartment.
     """
+
+
     def __init__(self, initial_dose: float, time: float, dose_func=lambda x, y: 0):
+        # Argument validation
         if not callable(dose_func):
             raise TypeError('dose_func must be a callable function.')
         try: 
@@ -28,8 +30,12 @@ class Protocol:
         except ValueError:
             raise TypeError('initial_dose and time must be numeric.')
 
+
     def __str__(self):
+        """Returns the name of the protocol as a string.
+        """
         return self.name 
+
 
     @property
     def name(self) -> str:
