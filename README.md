@@ -72,16 +72,16 @@ Here is an example of how you would set up some models and solve them using vari
 import pkmodel as pk
 
 # Define compartments
-central = pk.Compartment(volume=1, transition_rate=1) # note that for central compartments, transition_rate represents clearance rate
-peripheral1 = pk.Compartment(volume=1, transition_rate=0.5)
-peripheral2 = pk.Compartment(volume=1, transition_rate=2)
+central = pk.Compartment(v_p=1, q_p=1) # note that for central compartments, transition_rate represents clearance rate
+peripheral1 = pk.Compartment(v_p=1, q_p=0.5)
+peripheral2 = pk.Compartment(v_p=1, q_p=2)
 peripheral3 = pk.Compartment(volume1=
 
 # Two-compartment i.v. dosing model
-model1 = pk.Model(central_compartment=central, peripheral_compartments=[peripheral1])
+model1 = pk.Model(central_compartment=central, peripheral=[peripheral1])
 
 # Three-compartment subcontinuous dosing model
-model2 = pk.Model(central_compartment=central, peripheral_compartments=[peripheral1, peripheral2], k_a=1.0)
+model2 = pk.Model(central_compartment=central, peripheral=[peripheral1, peripheral2], k_a=1.0)
 
 # Standard dosing protocol with default dosing function (single dose in beginning)
 protocol1 = pk.Protocol(initial_dose=100, time=1)
@@ -109,7 +109,9 @@ Adelaide Punt - adelaide.punt@dtc.ox.ac.uk
 <!-- Problems -->
 ## Problems
 
-I ran into some issues with this project. Since I have been dealing with some time constraints this week, I ran out of time to complete this project. I tried to finish as much as possible, but I ran into an error calling `scipy.integration.solve_ivp`. 
+I ran into some issues with this project. I tried to get as far as possible, but there's a limit to how much I'm doing on my own and while sick. 
+
+The first error I ran into was an error calling `scipy.integration.solve_ivp`.
 
 I consistently end up with the error
 ```
@@ -126,7 +128,9 @@ I consistently end up with the error
 ValueError: could not broadcast input array from shape (3,3) into shape (3,)
 ```
 
-The sizes of the arrays mentioned in the error message vary with different inputs, however with every combination of model/protocol I tried I ended up with the same error. I even tried using the exact combination used in the original `protocol.py` file, and I ended up getting the same thing. I suspect there's something wrong with my environment, however I don't know. I decided to spend my remaining time cleaning the code, keeping good documentation, and writing unit tests as opposed to debugging. As such, I do not have any solutions to graph. 
+Every combination of model/protocol I tried I ended up with the same error. I even tried using the exact combination used in the original `protocol.py` file, and I ended up getting the same thing. I suspect there's something wrong with my environment, however I don't know. I decided to spend my remaining time cleaning the code, keeping good documentation, and writing unit tests as opposed to debugging. As such, I do not have any solutions to graph. 
+
+Another issue I'm having is replicating tests in Github Actions. I can run `unittests` and `pytest` perfectly well on my local device, but I seem to be running into issues using Github Actions. I suspect I don't have everything set up the way it should be, because the errors I get always seem to relate to missing packages. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
