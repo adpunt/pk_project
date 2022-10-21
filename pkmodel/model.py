@@ -122,13 +122,14 @@ class Model:
         q_0 = q
         if self.k_a is None:
             # I.V. dosing
-            dqc_dt = protocol.dose_func(t, protocol.initial_dose)
-                - q_c / self.central_compartment.volume * self.central_compartment.transition_rate
+            dqc_dt = protocol.dose_func(t, protocol.initial_dose) \
+            - q_c / self.central_compartment.volume * self.central_compartment.transition_rate
         else:
             # Subcontinuous dosing
             dq0_dt = protocol.dose_func(t, protocol.initial_dose) - (self.k_a * q_0)
             eqns.append(dq0_dt)
-            dqc_dt = self.k_a * q_c - q_c / self.central_compartment.volume * self.central_compartment.transition_rate
+            dqc_dt = self.k_a \
+            * q_c - q_c / self.central_compartment.volume * self.central_compartment.transition_rate
         # Calculate transitions which will be used in both dqc_dt and dqp_dt
         for pc in self.peripheral_compartments:
             dqp_dt = pc.transition_rate * ((q_c / self.central_compartment.volume) - (q_p / pc.volume))
