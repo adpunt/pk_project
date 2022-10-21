@@ -68,7 +68,7 @@ This package can be installed using pip.
 
 Here is an example of how you would set up some models and solve them using various dosing protocols.
 
-```
+```python
 import pkmodel as pk
 
 # Define compartments
@@ -87,7 +87,8 @@ m2 = pk.Model(central_compartment=central, peripheral_compartments=[peripheral1,
 p1 = pk.Protocol(initial_dose=100, time=1)
 
 # Standard dosing protocol with defined dosing function
-p2 = pk.Protocol(initial_dose=100, time=1, dose_func=lambda t, y: -1 / (t + 1))
+test_fn = lambda t, y: 1 / (t + 2)
+p2 = pk.Protocol(initial_dose=100, time=1, dose_func=test_fn)
 
 # Solve the PK models
 sol1 = m1.solve(p1)

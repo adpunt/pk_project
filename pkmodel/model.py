@@ -32,7 +32,10 @@ class Model:
             raise TypeError('k_a must be type pk.Compartment')
         self.central_compartment = central_compartment
         self.peripheral_compartments = peripheral_compartments
-        self.k_a = k_a
+        if k_a is not None:
+            self.k_a = float(k_a)
+        else:
+            self.k_a = None
 
 
     def __str__(self):
@@ -45,20 +48,18 @@ class Model:
     def name(self) -> str:
         # Create a string of all peripheral compartments
         pc_str = ""
-        for c in peripheral_compartments:
+        for c in self.peripheral_compartments:
             pc_str = pc_str + str(c) + ", "
         pc_str = pc_str[:-2]
         # Piece the rest of the string together
         if type(self.k_a) is None:
-            return 'i.v. dosing model with '
-            'central_volume={0}, clearance_rate={1}, peripheral_compartments={2}'.format(
+            return 'central_volume={0}, clearance_rate={1}, peripheral_compartments={2}'.format(
                 str(self.central_compartment.volume),
                 str(self.central_compartment.transition_rate),
                 pc_str,
             )
         else:
-            return 'subcontinuous dosing model with '
-            'central_volume={0}, clearance_rate={1}, peripheral_compartments={2}, K_a={3}'.format(
+            return 'central_volume={0}, clearance_rate={1}, peripheral_compartments={2}, K_a={3}'.format(
                 str(self.central_compartment.volume),
                 str(self.central_compartment.transition_rate),
                 pc_str,
@@ -78,7 +79,7 @@ class Model:
         """
         if not isinstance(new_compartment, pk.Compartment):
             raise TypeError('new peripheral compartment must be type pk.Compartment.')
-        self.peripheral_compartments.append(c)
+        self.peripheral_compartments.append(new_compartment)
 
 
     def remove_compartment(self, delete_compartment):
@@ -95,8 +96,8 @@ class Model:
         """
         if not isinstance(delete_compartment, pk.Compartment):
             raise TypeError('peripheral compartment to be removed must be type pk.Compartment.')
-        if c in self.peripheral_compartments:
-            self.peripheral_compartments.remove(c)
+        if delete_compartment in self.peripheral_compartments:
+            self.peripheral_compartments.remove(delete_compartment)
         else: 
             raise ValueError('peripheral compartment is not in list of compartments for this model.')
 
@@ -120,7 +121,7 @@ class Model:
         q_c = q
         q_p = q
         q_0 = q
-        if self.k_a is None:
+        if not self.k_a:
             # I.V. dosing
             dqc_dt = protocol.dose_func(t, protocol.initial_dose) \
             - q_c / self.central_compartment.volume * self.central_compartment.transition_rate
@@ -156,7 +157,7 @@ class Model:
         # Create a list of timesteps
         t_eval = numpy.linspace(0, protocol.time, 1000)
         # Determine how many initial conditions to set
-        if self.k_a is None:
+        if not self.k_a:
             y0 = numpy.zeros(len(self.peripheral_compartments)+1)
         else:
             y0 = numpy.zeros(len(self.peripheral_compartments)+2)
