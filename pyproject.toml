@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "pk-project"
+version = "0.1.0"
+description = ""
+authors = ["adpunt <apunt@hmc.edu>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "pk_project"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+scipy = "^1.9.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
