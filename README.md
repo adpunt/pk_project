@@ -126,6 +126,4 @@ Adelaide Punt - adelaide.punt@dtc.ox.ac.uk
 Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-=======
-# 2020-software-engineering-projects-pk
-starter pk modelling repository
+
