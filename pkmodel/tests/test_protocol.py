@@ -1,5 +1,6 @@
 import unittest
 import pkmodel as pk
+import pytest
 
 
 class ProtocolTest(unittest.TestCase):

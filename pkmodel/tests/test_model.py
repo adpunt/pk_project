@@ -1,6 +1,7 @@
 import unittest
 import pkmodel as pk
 import scipy.integrate
+import pytest
 
 
 class ModelTest(unittest.TestCase):

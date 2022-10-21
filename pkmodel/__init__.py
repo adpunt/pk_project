@@ -7,7 +7,7 @@ of Parmokinetic (PK) models
 # Import version info
 from .version_info import VERSION_INT, VERSION  # noqa
 
-import scipy
+import pytest
 
 # Import main classes
 from .model import Model    # noqa
