@@ -1,4 +1,5 @@
 
+
 [![OS Tests](https://github.com/adpunt/pk_project/actions/workflows/environment_testing.yml/badge.svg)](https://github.com/adpunt/pk_project)
 [![codecov](https://codecov.io/gh/adpunt/pk_project/branch/master/graph/badge.svg?token=73FHW8GEAI)](https://codecov.io/gh/adpunt/pk_project)
 [![BCH compliance](https://bettercodehub.com/edge/badge/adpunt/pk_project?branch=master)](https://bettercodehub.com/)
@@ -57,9 +58,10 @@ where $k_aq_0$ represents the gradual flow of drug into the central compartment 
 
 
 
-This package can be installed using pip. 
-```pip install https://test.pypi.org/simple/<INSERT_NAME>```
+~~This package can be installed using pip. 
+```pip install https://test.pypi.org/simple/<INSERT_NAME>```~~
 
+This package can be cloned from this repository.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
@@ -90,7 +92,7 @@ protocol1 = pk.Protocol(initial_dose=100, time=1)
 test_fn = lambda t, y: 1 / (t + 2)
 protocol2 = pk.Protocol(initial_dose=100, time=1, dose_func=test_fn)
 
-# Solve the PK models
+# Solve and plot the PK models
 sol1 = model1.solve(protocol1)
 sol2 = model2.solve(protocol2)
 ```
@@ -109,28 +111,12 @@ Adelaide Punt - adelaide.punt@dtc.ox.ac.uk
 <!-- Problems -->
 ## Problems
 
-I ran into some issues with this project. I tried to get as far as possible, but there's a limit to how much I'm doing on my own and while sick. 
+I ran into a few problems along the way, and due to my illness and lack of time I was unable to solve all of them. 
 
-The first error I ran into was an error calling `scipy.integration.solve_ivp`.
+I'm having issues replicating tests in Github Actions. I can run `unittests` and `pytest` perfectly well on my local device, but I seem to be running into issues using Github Actions. I suspect I don't have everything set up the way it should be, because the errors I get always seem to relate to missing packages. As a result, my continuous integration tests are failing. 
 
-I consistently end up with the error
-```
-  File "/Users/apunt/repos/pk_project/pkmodel/model.py", line 164, in solve
-    sol = scipy.integrate.solve_ivp(
-  File "/Users/apunt/repos/pk_project/venv/lib/python3.8/site-packages/scipy/integrate/_ivp/ivp.py", line 589, in solve_ivp
-    message = solver.step()
-  File "/Users/apunt/repos/pk_project/venv/lib/python3.8/site-packages/scipy/integrate/_ivp/base.py", line 181, in step
-    success, message = self._step_impl()
-  File "/Users/apunt/repos/pk_project/venv/lib/python3.8/site-packages/scipy/integrate/_ivp/rk.py", line 144, in _step_impl
-    y_new, f_new = rk_step(self.fun, t, y, self.f, h, self.A,
-  File "/Users/apunt/repos/pk_project/venv/lib/python3.8/site-packages/scipy/integrate/_ivp/rk.py", line 61, in rk_step
-    K[0] = f
-ValueError: could not broadcast input array from shape (3,3) into shape (3,)
-```
+I was unable to get `poetry` to  install my package so I had to resort to instructing users to clone my repository from Github.
 
-Every combination of model/protocol I tried I ended up with the same error. I even tried using the exact combination used in the original `protocol.py` file, and I ended up getting the same thing. I suspect there's something wrong with my environment, however I don't know. I decided to spend my remaining time cleaning the code, keeping good documentation, and writing unit tests as opposed to debugging. As such, I do not have any solutions to graph. 
-
-Another issue I'm having is replicating tests in Github Actions. I can run `unittests` and `pytest` perfectly well on my local device, but I seem to be running into issues using Github Actions. I suspect I don't have everything set up the way it should be, because the errors I get always seem to relate to missing packages. 
+Finally, I was able to just fix a bug that was preventing me from graphing at the last minute. Unfortunately, this did not leave me with much time to make many interesting graphing features or update the `README` thoroughly. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
