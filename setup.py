@@ -56,7 +56,7 @@ setup(
     url='https://github.com/SABS-R3/2020-software-engineering-projects-pk',
 
     # Packages to include
-    packages=find_packages(include=('pkmodel', 'pkmodel.*')),
+    packages=find_packages(include=('pkmodel', 'pkmodel.*', 'tests', 'scipy')),
 
     # List of dependencies
     install_requires=[

@@ -78,21 +78,21 @@ peripheral2 = pk.Compartment(volume=1, transition_rate=2)
 peripheral3 = pk.Compartment(volume1=
 
 # Two-compartment i.v. dosing model
-m1 = pk.Model(central_compartment=central, peripheral_compartments=[peripheral1])
+model1 = pk.Model(central_compartment=central, peripheral_compartments=[peripheral1])
 
 # Three-compartment subcontinuous dosing model
-m2 = pk.Model(central_compartment=central, peripheral_compartments=[peripheral1, peripheral2], k_a=1.0)
+model2 = pk.Model(central_compartment=central, peripheral_compartments=[peripheral1, peripheral2], k_a=1.0)
 
 # Standard dosing protocol with default dosing function (single dose in beginning)
-p1 = pk.Protocol(initial_dose=100, time=1)
+protocol1 = pk.Protocol(initial_dose=100, time=1)
 
 # Standard dosing protocol with defined dosing function
 test_fn = lambda t, y: 1 / (t + 2)
-p2 = pk.Protocol(initial_dose=100, time=1, dose_func=test_fn)
+protocol2 = pk.Protocol(initial_dose=100, time=1, dose_func=test_fn)
 
 # Solve the PK models
-sol1 = m1.solve(p1)
-sol2 = m2.solve(p2)
+sol1 = model1.solve(protocol1)
+sol2 = model2.solve(protocol2)
 ```
 
 

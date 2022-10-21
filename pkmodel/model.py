@@ -1,16 +1,17 @@
 import pkmodel as pk
 import scipy.integrate
-import matplotlib.pyplot
+# import matplotlib.pyplot
 import numpy
+
 
 class Model:
     """A Pharmokinetic (PK) model class which takes in a central
-    compartment, and a list of peripheral compartments and other 
-    relevant information with which to build a PK model. The user can 
+    compartment, and a list of peripheral compartments and other
+    relevant information with which to build a PK model. The user can
     then sovle and visualise this PK model using a dosing protocol.
 
     Attributes:
-        central_component: A Compartment representing the central 
+        central_component: A Compartment representing the central
             compartment of the PK model.
         peripheral_compartments: A list of Compartments representing
             the peripheral compartments of the PK model.
@@ -37,12 +38,10 @@ class Model:
         else:
             self.k_a = None
 
-
     def __str__(self):
         """Returns the name of the model as a string.
         """
-        return self.name 
-
+        return self.name
 
     @property
     def name(self) -> str:
@@ -53,19 +52,18 @@ class Model:
         pc_str = pc_str[:-2]
         # Piece the rest of the string together
         if type(self.k_a) is None:
-            return 'central_volume={0}, clearance_rate={1}, peripheral_compartments={2}'.format(
+            return 'v_c={0}, cl={1}, peripheral={2}'.format(
                 str(self.central_compartment.volume),
                 str(self.central_compartment.transition_rate),
                 pc_str,
             )
         else:
-            return 'central_volume={0}, clearance_rate={1}, peripheral_compartments={2}, K_a={3}'.format(
+            return 'v_c={0}, cl={1}, peripheral={2}, K_a={3}'.format(
                 str(self.central_compartment.volume),
                 str(self.central_compartment.transition_rate),
                 pc_str,
                 str(self.k_a),
             )
-
 
     def add_compartment(self, new_compartment):
         """Add a peripheral compartment to the PK model.
@@ -80,7 +78,6 @@ class Model:
         if not isinstance(new_compartment, pk.Compartment):
             raise TypeError('new peripheral compartment must be type pk.Compartment.')
         self.peripheral_compartments.append(new_compartment)
-
 
     def remove_compartment(self, delete_compartment):
         """Add a peripheral compartment to the PK model.
@@ -98,22 +95,21 @@ class Model:
             raise TypeError('peripheral compartment to be removed must be type pk.Compartment.')
         if delete_compartment in self.peripheral_compartments:
             self.peripheral_compartments.remove(delete_compartment)
-        else: 
+        else:
             raise ValueError('peripheral compartment is not in list of compartments for this model.')
 
-
-    def rhs(self, t, q, protocol): 
+    def rhs(self, t, q, protocol):
         """Returns the right-hand-sides of a system of equation of
-        Ordinary Differential Equations (ODEs) representing the given 
-        PK model. 
+        Ordinary Differential Equations (ODEs) representing the given
+        PK model.
 
-        Args: 
+        Args:
             t: float representing the dependent variable, time in this
                 case
-            q: float representing the time-dependent variable, drug 
+            q: float representing the time-dependent variable, drug
                 quantity in this case
 
-        Returns: 
+        Returns:
             List of equations representing the rhs of the PK model
             given in terms of t and q.
         """
@@ -121,23 +117,22 @@ class Model:
         q_c = q
         q_p = q
         q_0 = q
+        v_c = self.central_compartment.volume
+        q_c = self.central_compartment.transition_rate
         if not self.k_a:
             # I.V. dosing
-            dqc_dt = protocol.dose_func(t, protocol.initial_dose) \
-            - q_c / self.central_compartment.volume * self.central_compartment.transition_rate
+            dqc_dt = protocol.dose_func(t, protocol.initial_dose) - (q_c / v_c) * q_c
         else:
             # Subcontinuous dosing
             dq0_dt = protocol.dose_func(t, protocol.initial_dose) - (self.k_a * q_0)
             eqns.append(dq0_dt)
-            dqc_dt = self.k_a \
-            * q_c - q_c / self.central_compartment.volume * self.central_compartment.transition_rate
+            dqc_dt = (self.k_a * q_c) - (q_c / v_c) * q_c
         # Calculate transitions which will be used in both dqc_dt and dqp_dt
         for pc in self.peripheral_compartments:
-            dqp_dt = pc.transition_rate * ((q_c / self.central_compartment.volume) - (q_p / pc.volume))
+            dqp_dt = pc.transition_rate * ((q_c / v_c) - (q_p / pc.volume))
             eqns.append(dqp_dt)
         eqns.append(dqc_dt)
         return eqns
-
 
     def solve(self, protocol):
         """Solves the PK model given a protocol, using scipy's solve_ivp
@@ -145,7 +140,7 @@ class Model:
 
         Args:
             protocol: Protocol object representing the dosing protocol
-                that will be used to solve the PK model. 
+                that will be used to solve the PK model.
 
         Returns:
             A solution to the PK model representing the drug quantitiy
@@ -158,13 +153,13 @@ class Model:
         t_eval = numpy.linspace(0, protocol.time, 1000)
         # Determine how many initial conditions to set
         if not self.k_a:
-            y0 = numpy.zeros(len(self.peripheral_compartments)+1)
+            y0 = numpy.zeros(len(self.peripheral_compartments) + 1)
         else:
-            y0 = numpy.zeros(len(self.peripheral_compartments)+2)
+            y0 = numpy.zeros(len(self.peripheral_compartments) + 2)
         # Solve ODE based on system of equations, timespan, and initial conditions
         sol = scipy.integrate.solve_ivp(
-            fun= lambda t, q: self.rhs(t, q, protocol),
-            t_span= [t_eval[0], t_eval[-1]],
+            fun=lambda t, q: self.rhs(t, q, protocol),
+            t_span=[t_eval[0], t_eval[-1]],
             y0=y0, t_eval=t_eval
         )
         return sol

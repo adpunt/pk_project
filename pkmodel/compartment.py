@@ -1,5 +1,5 @@
 class Compartment:
-    """The Compartment class contains the building blocks of the PK 
+    """The Compartment class contains the building blocks of the PK
     model. Each compartment contains a volume and transition rate in
     and out of the compartmnet. Note that for central compartments, the
     transition rate represents the clearance rate.
@@ -13,7 +13,6 @@ class Compartment:
         compartment.
     """
 
-
     def __init__(self, volume: float, transition_rate: float):
         # Argument validation
         if type(volume) not in [int, float] or volume <= 0:
@@ -23,13 +22,11 @@ class Compartment:
         self.volume = float(volume)
         self.transition_rate = float(transition_rate)
 
-
     def __str__(self):
         """Returns the name of the compartment as a string.
         """
-        return self.name 
-
+        return self.name
 
     @property
     def name(self) -> str:
-        return '[volume={0}, transition_rate={1}]'.format(self.volume, self.transition_rate)
+        return '[v_p={0}, q_p={1}]'.format(self.volume, self.transition_rate)

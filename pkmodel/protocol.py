@@ -12,16 +12,15 @@ class Protocol:
         compartment.
     """
 
-
     def __init__(self, initial_dose: float, time: float, dose_func=lambda x, y: 0):
         # Argument validation
         if not callable(dose_func):
             raise TypeError('dose_func must be a callable function.')
-        try: 
+        try:
             # Test out dose_func to see if given two numeric inputs, it returns a numeric output
             val = dose_func(1, 2)
             float(val)
-        except:
+        except Exception:
             raise TypeError('dose_func must take in two numeric inputs and return a numeric output.')
         self.dose_func = dose_func
         try:
@@ -34,12 +33,10 @@ class Protocol:
         if self.time <= 0:
             raise ValueError('time must be greater than 0')
 
-
     def __str__(self):
         """Returns the name of the protocol as a string.
         """
-        return self.name 
-
+        return self.name
 
     @property
     def name(self) -> str:
